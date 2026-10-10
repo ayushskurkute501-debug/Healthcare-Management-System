@@ -29,6 +29,10 @@ public class DoctorController {
 
     @PostMapping("/doctors")
     public Doctor createDoctor(@RequestBody DoctorRequest request) {
+        if (request == null || request.getName() == null || request.getName().isBlank() || request.getDepartment() == null || request.getDepartment().isBlank() || request.getPassword() == null || request.getPassword().isBlank()) {
+            throw new IllegalArgumentException("Doctor name, department, and password are required.");
+        }
+
         Department department = departmentRepository.findByName(request.getDepartment())
                 .orElseThrow(() -> new RuntimeException("Department not found: " + request.getDepartment()));
 
@@ -37,7 +41,7 @@ public class DoctorController {
     }
 
     @PutMapping("/doctors/{id}/password")
-    public ResponseEntity<DoctorPasswordResponse> updatePassword(@PathVariable Long id, @RequestBody DoctorPasswordUpdateRequest request) {
+    public ResponseEntity<DoctorPasswordResponse> updatePassword(@PathVariable long id, @RequestBody DoctorPasswordUpdateRequest request) {
         Doctor doctor = doctorRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Doctor not found"));
 
@@ -51,7 +55,7 @@ public class DoctorController {
     }
 
     @PutMapping("/doctors/{id}/availability")
-    public ResponseEntity<DoctorAvailabilityResponse> updateAvailability(@PathVariable Long id, @RequestBody DoctorAvailabilityUpdateRequest request) {
+    public ResponseEntity<DoctorAvailabilityResponse> updateAvailability(@PathVariable long id, @RequestBody DoctorAvailabilityUpdateRequest request) {
         Doctor doctor = doctorRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Doctor not found"));
 
@@ -76,7 +80,7 @@ public class DoctorController {
     }
 
     @DeleteMapping("/doctors/{id}")
-    public ResponseEntity<Void> deleteDoctor(@PathVariable Long id) {
+    public ResponseEntity<Void> deleteDoctor(@PathVariable long id) {
         doctorRepository.deleteById(id);
         return ResponseEntity.noContent().build();
     }
@@ -172,7 +176,7 @@ public class DoctorController {
     }
 
     public static class DoctorPasswordResponse {
-        private Long id;
+        private long id;
         private String name;
         private String department;
         private String password;
@@ -184,7 +188,7 @@ public class DoctorController {
             this.password = doctor.getPassword();
         }
 
-        public Long getId() {
+        public long getId() {
             return id;
         }
 
@@ -202,7 +206,7 @@ public class DoctorController {
     }
 
     public static class DoctorAvailabilityResponse {
-        private Long id;
+        private long id;
         private String name;
         private String status;
         private String date;
@@ -220,7 +224,7 @@ public class DoctorController {
             this.duration = doctor.getLeaveDurationLabel();
         }
 
-        public Long getId() {
+        public long getId() {
             return id;
         }
 

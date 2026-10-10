@@ -25,6 +25,9 @@ public class PatientController {
 
     @PostMapping("/patients")
     public Patient createPatient(@RequestBody Patient patient) {
+        if (patient == null || patient.getName() == null || patient.getName().isBlank() || patient.getPassword() == null || patient.getPassword().isBlank()) {
+            throw new IllegalArgumentException("Patient name and password are required.");
+        }
         return patientRepository.save(patient);
     }
 
@@ -41,7 +44,7 @@ public class PatientController {
     }
 
     @DeleteMapping("/patients/{id}")
-    public ResponseEntity<Void> deletePatient(@PathVariable Long id) {
+    public ResponseEntity<Void> deletePatient(@PathVariable long id) {
         patientRepository.deleteById(id);
         return ResponseEntity.noContent().build();
     }

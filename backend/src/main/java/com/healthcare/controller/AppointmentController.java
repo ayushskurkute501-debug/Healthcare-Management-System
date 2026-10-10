@@ -46,6 +46,10 @@ public class AppointmentController {
 
     @PostMapping("/appointments")
     public ResponseEntity<?> createAppointment(@RequestBody Appointment appointment) {
+        if (appointment == null) {
+            return ResponseEntity.badRequest().body(Map.of("message", "Appointment payload is required."));
+        }
+
         if (appointment.getDoctorName() == null || appointment.getDoctorName().isBlank()) {
             return ResponseEntity.badRequest().body(Map.of("message", "Doctor name is required."));
         }
@@ -79,7 +83,7 @@ public class AppointmentController {
     }
 
     @PutMapping("/appointments/{id}/status")
-    public ResponseEntity<Appointment> updateStatus(@PathVariable Long id, @RequestBody StatusUpdateRequest request) {
+    public ResponseEntity<Appointment> updateStatus(@PathVariable long id, @RequestBody StatusUpdateRequest request) {
         Appointment appointment = appointmentRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Appointment not found"));
         appointment.setStatus(request.status());
@@ -87,7 +91,7 @@ public class AppointmentController {
     }
 
     @PutMapping("/appointments/{id}/diagnosis")
-    public ResponseEntity<Appointment> updateDiagnosis(@PathVariable Long id, @RequestBody DiagnosisUpdateRequest request) {
+    public ResponseEntity<Appointment> updateDiagnosis(@PathVariable long id, @RequestBody DiagnosisUpdateRequest request) {
         Appointment appointment = appointmentRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Appointment not found"));
         appointment.setDiagnosis(request.diagnosis());
